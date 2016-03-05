@@ -1,4 +1,4 @@
-#include "cpakt/cpakt.h"
+#include "cpakt/cpakt-main.h"
 
 CPAKT_REGISTER_AND_RUN(
     test1,

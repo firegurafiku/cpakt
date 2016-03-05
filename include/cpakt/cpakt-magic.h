@@ -1,26 +1,50 @@
 #ifndef CPAKT_MAGIC_H_
 #define CPAKT_MAGIC_H_
 
-/**
- *  http://jhnet.co.uk/articles/cpp_magic
- */
+/** C preprocessor magic
+    ====================
 
+    To make test registration as simple as possible, Cpakt relies on C99's
+    variadic macros. Unfortunately, C preprocessor is quite limited when it
+    comes to advanced templating, so a big amount of magic was required to make
+    things working. In particular, it was required to find a way to iterate
+    over a variadic macro's arguments.
+
+    In order not to reinvent a wheel, we decided to simply incorporate Jonathan
+    Heathcote's implementation into the project as a separate file, prefixing
+    all it's names with "CPAKT_MAGIC_". BTW, we asked Jonathan and he answered
+    he is okay if we use his code under the MIT license.
+
+    His original implementation is available on his website, accompanied with
+    detailed explanation:
+
+        http://jhnet.co.uk/articles/cpp_magic
+
+    Important notes
+    ---------------
+
+    1. All names starting with "CPACK_MAGIC_" must be treated as internal; they
+       must not be explicitly used by the library end users.
+
+    2. Current implementation can process up to 1024 variadic arguments. So,
+       the total number of test functions, test setup functions and test
+       teardown functions must be less or equal to that number. */
+
+#define CPAKT_MAGIC_EMPTY()
 #define CPAKT_MAGIC_FIRST(a, ...) a
 #define CPAKT_MAGIC_SECOND(a, b, ...) b
 
-#define CPAKT_MAGIC_EMPTY()
-
-#define CPAKT_MAGIC_EVAL(...)     CPAKT_MAGIC_EVAL1024(          __VA_ARGS__)
-#define CPAKT_MAGIC_EVAL1024(...) CPAKT_MAGIC_EVAL512( CPAKT_MAGIC_EVAL512( __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL512(...)  CPAKT_MAGIC_EVAL256( CPAKT_MAGIC_EVAL256( __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL256(...)  CPAKT_MAGIC_EVAL128( CPAKT_MAGIC_EVAL128( __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL128(...)  CPAKT_MAGIC_EVAL64(  CPAKT_MAGIC_EVAL64(  __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL64(...)   CPAKT_MAGIC_EVAL32(  CPAKT_MAGIC_EVAL32(  __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL32(...)   CPAKT_MAGIC_EVAL16(  CPAKT_MAGIC_EVAL16(  __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL16(...)   CPAKT_MAGIC_EVAL8(   CPAKT_MAGIC_EVAL8(   __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL8(...)    CPAKT_MAGIC_EVAL4(   CPAKT_MAGIC_EVAL4(   __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL4(...)    CPAKT_MAGIC_EVAL2(   CPAKT_MAGIC_EVAL2(   __VA_ARGS__))
-#define CPAKT_MAGIC_EVAL2(...)    CPAKT_MAGIC_EVAL1(   CPAKT_MAGIC_EVAL1(   __VA_ARGS__))
+#define CPAKT_MAGIC_EVAL(...)     CPAKT_MAGIC_EVAL1024(__VA_ARGS__)
+#define CPAKT_MAGIC_EVAL1024(...) CPAKT_MAGIC_EVAL512(CPAKT_MAGIC_EVAL512(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL512(...)  CPAKT_MAGIC_EVAL256(CPAKT_MAGIC_EVAL256(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL256(...)  CPAKT_MAGIC_EVAL128(CPAKT_MAGIC_EVAL128(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL128(...)  CPAKT_MAGIC_EVAL64(CPAKT_MAGIC_EVAL64(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL64(...)   CPAKT_MAGIC_EVAL32(CPAKT_MAGIC_EVAL32(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL32(...)   CPAKT_MAGIC_EVAL16(CPAKT_MAGIC_EVAL16(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL16(...)   CPAKT_MAGIC_EVAL8(CPAKT_MAGIC_EVAL8(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL8(...)    CPAKT_MAGIC_EVAL4(CPAKT_MAGIC_EVAL4(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL4(...)    CPAKT_MAGIC_EVAL2(CPAKT_MAGIC_EVAL2(__VA_ARGS__))
+#define CPAKT_MAGIC_EVAL2(...)    CPAKT_MAGIC_EVAL1(CPAKT_MAGIC_EVAL1(__VA_ARGS__))
 #define CPAKT_MAGIC_EVAL1(...)    __VA_ARGS__
 
 #define CPAKT_MAGIC_DEFER1(m) m CPAKT_MAGIC_EMPTY()
