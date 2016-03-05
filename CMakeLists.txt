@@ -5,6 +5,7 @@ set(CPAKT_SOURCE_FILES
     include/cpakt/cpakt-asserts.h
     include/cpakt/cpakt-assertz.h
     include/cpakt/cpakt-defs.h
+    include/cpakt/cpakt-formatter.h
     include/cpakt/cpakt-impl.h
     include/cpakt/cpakt-magic.h
     include/cpakt/cpakt-main.h
