@@ -1,0 +1,10 @@
+root = true
+
+[*.{txt,rst,c,h}]
+charset              = utf8
+#end_of_line         = ??? <-- don't set, let Git convert newlines on its own.
+indent_size          = 4
+indent_style         = space
+insert_final_newline = true
+max_line_length      = 80
+trim_trailing_whitespace = true
