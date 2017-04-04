@@ -2,7 +2,7 @@
 #define CPAKT_H_
 
 #include "cpakt/cpakt-defs.h"
-#include "cpakt/cpakt-magic.h"
+#include "cpakt/impl/cpakt-magic.h"
 
 // Compile-time configuration.
 #define CPAKT_MAIN_SETUP_SUFFIX       "setup"
@@ -42,10 +42,5 @@
                                                                     \
         return cpakt_run_registry(&registry, &options, argc, argv); \
     }
-
-int cpakt_run_registry(
-        struct cpakt_test_record[],
-        struct cpakt_options const*,
-        int argc, char **argv);
 
 #endif

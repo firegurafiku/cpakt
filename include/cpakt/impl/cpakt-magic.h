@@ -28,11 +28,20 @@
 
     2. Current implementation can process up to 1024 variadic arguments. So,
        the total number of test functions, test setup functions and test
-       teardown functions must be less or equal to that number. */
+       teardown functions must be less or equal to that number.
+
+    3. The code, obviously, works only if variadic macros are supported by the
+       compiler (C99 or later). Otherwise, even the header file mustn't be
+       included at all. */
 
 #define CPAKT_MAGIC_EMPTY()
 #define CPAKT_MAGIC_FIRST(a, ...) a
 #define CPAKT_MAGIC_SECOND(a, b, ...) b
+
+ /* From here and below: don't try to wrap code lines or otherwise shorten
+    them to fit to 80 columns limit. This cannot be done without sacrifying
+    either readability, or Jonathan's original names. The latter matters for
+    maintainability. */
 
 #define CPAKT_MAGIC_EVAL(...)     CPAKT_MAGIC_EVAL1024(__VA_ARGS__)
 #define CPAKT_MAGIC_EVAL1024(...) CPAKT_MAGIC_EVAL512(CPAKT_MAGIC_EVAL512(__VA_ARGS__))
@@ -75,12 +84,12 @@
 #define CPAKT_MAGIC__END_OF_ARGUMENTS_() 0
 
 #define CPAKT_MAGIC_MAP(m, first, ...)                       \
-  m(first)                                                   \
-  CPAKT_MAGIC_IF_ELSE(CPAKT_MAGIC_HAS_ARGS(__VA_ARGS__))(    \
+    m(first)                                                 \
+    CPAKT_MAGIC_IF_ELSE(CPAKT_MAGIC_HAS_ARGS(__VA_ARGS__))(  \
     CPAKT_MAGIC_DEFER2(CPAKT_MAGIC__MAP)()(m, __VA_ARGS__)   \
-  )(                                                         \
-    /* Do nothing, just terminate */                         \
-  )
+    )(                                                       \
+        /* Do nothing, just terminate */                     \
+    )
 #define CPAKT_MAGIC__MAP() CPAKT_MAGIC_MAP
 
 #endif

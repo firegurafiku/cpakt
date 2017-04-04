@@ -2,6 +2,7 @@
 #define CPAKT_ASSERTS_H_
 
 #include "cpakt/cpakt-defs.h"
+#include "cpakt/impl/cpakt-impl-asserts.h"
 
 #define CPAKT_ASSERT_INT_EQ(a, b) \
     cpakt_impl_assert_int_eq((a), #a, (b), #b, __FILE__, __LINE__)
@@ -38,27 +39,4 @@
 #define CPAKT_MESSAGE(fmt, ...)
 #define CPAKT_DEBUG(fmt, ...)
 
-void cpakt_impl_assert_int_eq(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
-
-void cpakt_impl_assert_int_ne(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
-
-void cpakt_impl_assert_int_lt(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
-
-void cpakt_impl_assert_int_le(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
-
-void cpakt_impl_assert_int_gt(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
-
-void cpakt_impl_assert_int_ge(cpakt_longest_int a, char const* a_expr,
-			      cpakt_longest_int b, char const* b_expr,
-			      char const* file, int line);
 #endif

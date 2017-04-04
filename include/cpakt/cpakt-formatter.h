@@ -1,6 +1,8 @@
 #ifndef CPAKT_FORMATTER_H_
 #define CPAKT_FORMATTER_H_
+
 #include "cpakt/cpakt-defs.h"
+#include "cpakt/impl/cpakt-impl-defs.h"
 
 /** Output formatters API
     =====================
@@ -12,54 +14,7 @@
 
     This is only necessery for writing custom output formatters; files with
     actual unit tests code shouldn't generally include this header, despite
-    this API is public (not internal).
-
-    What is output formatter?
-    -------------------------
-    
-
-*/
-
-enum cpakt_func_type {
-    /** The role a (void -> void) function plays in a unit testing registry. */
-    
-    cpakt_func_test,     /** */
-    cpakt_func_setup,
-    cpakt_func_teardown
-};
-
-struct cpakt_test_record_ext {
-/** Another version of :struct:`cpakt_test_record` which additionally stores
-    test function role as a member. Cpakt uses this structure for its internal
-    test registy representation. The array of such structure objects is
-    typically stored sorted, reflecting the order in which tests are queued to
-    be run. */
-    
-    char const*          name;
-    cpakt_test_func      func;
-    enum cpakt_func_type type;
-};
-
-enum cpakt_assertion_type {
-    cpakt_assertion_unconditional,
-    cpakt_assertion_pointer,
-    cpakt_assertion_integral,
-    cpakt_assertion_string,
-    cpakt_assertion_float,
-    cpakt_assertion_double
-};
-
-struct cpakt_assertion_record {
-    enum cpakt_assertion_type type;
-    char const*          a_expr;
-    char const*          b_expr;
-    char const*          a_repr;
-    char const*          b_repr;
-    char const*          message;
-    char const*          file;
-    int                  line;
-    cpakt_longest_int    timestamp;
-};
+    this API is public (not internal). */
 
 struct cpakt_output_formatter_args {
     char                         const* output_file;
@@ -69,6 +24,7 @@ struct cpakt_output_formatter_args {
     int                                 registry_count;
 };
 
+struct cpakt_output_formatter {
 /** Incapsulates information, required for registering a test output
     formatter. Cpakt uses an event-driven approach to allow user to supply
     specify their own output formatting logic. Thus, this struct is just
@@ -78,7 +34,7 @@ struct cpakt_output_formatter_args {
     This state argument is the value returned by the `create` callback;
     it's supposed to contain any information which must be kept between the
     callbacks. Generally speaking, state should be allocate on heap
-    by `create` to be freed by `destroy`. 
+    by `create` to be freed by `destroy`.
 
     The callbacks are called is the following order:
 
@@ -136,7 +92,6 @@ struct cpakt_output_formatter_args {
         }
 
      */
-struct cpakt_output_formatter {
 
     char const* identifier;
     /** Formatter name.
@@ -145,9 +100,9 @@ struct cpakt_output_formatter {
         is registered to be available to be chosen from the command line
         parameter. It's okay to set this value to :const:`NULL` if all you
         want is to pass the formatter to :func:`cpakt_run_registry`. */
-    
+
     void* (*create)
-	(struct cpakt_output_formatter_args const* args);
+        (struct cpakt_output_formatter_args const* args);
     /** Creates and initializes new formatter.
         This callback returns the `state` object to be passed to all other
         callbacks as their first parameters. This state is typically
@@ -163,14 +118,14 @@ struct cpakt_output_formatter {
         do simular low-level things like that. Opening file handles,
         establishing database connection or anything relatively high-level
         should go to `before_start` callback. */
-    
+
     void (*destroy)(void* st);
     /** Destroys and finalize. */
-    
+
     void (*test_failed)
-	(void* st, struct cpakt_assertion_record const* test);
+        (void* st, struct cpakt_assertion_record const* test);
     /** ... */
-    
+
     void (*test_segfault)(void* st);
     /** ... */
 
@@ -178,26 +133,40 @@ struct cpakt_output_formatter {
     /** ... */
 
     void (*before_test)
-	(void* st, struct cpakt_test_record_ext const* test);
+        (void* st, struct cpakt_test_record_ext const* test);
     /** ... */
 
     void (*before_test_setup)
-	(void* st, struct cpakt_test_record_ext const* setup);
+        (void* st, struct cpakt_test_record_ext const* setup);
 
     void (*before_test_teardown)
-	(void* st, struct cpakt_test_record_ext const* tear);
+        (void* st, struct cpakt_test_record_ext const* tear);
 
     void (*after_end)(void* st);
-    
-    void (*after_test)
-	(void* st, struct cpakt_test_record_ext const* test);
-    
-    void (*after_test_setup)
-	(void* st, struct cpakt_test_record_ext const* setup);
-    
-    void (*after_test_teardown)
-	(void* st, struct cpakt_test_record_ext const* tear);
 
+    void (*after_test)
+        (void* st, struct cpakt_test_record_ext const* test);
+
+    void (*after_test_setup)
+        (void* st, struct cpakt_test_record_ext const* setup);
+
+    void (*after_test_teardown)
+        (void* st, struct cpakt_test_record_ext const* tear);
+
+    void (*fubar)(void* st);
 };
+
+CPAKT_EXTERN_C
+void cpakt_init_empty_formatter(struct cpakt_output_formatter* formatter);
+/** Returns a "do-nothing" output formatter with all callbacks set to
+    :const:`NULL`. This function SHALL be used when a new formatter
+    is constructed from scratch to ensure that no callback points to
+    random place in memory due to stack allocation. */
+
+CPAKT_EXTERN_C
+void cpakt_init_default_formatter(struct cpakt_output_formatter* formatter);
+/** Returns default output formatter which is used
+    by :func:`cpakt_run_test_registry` when its `formatter` argument
+    is set to :const:`NULL`. */
 
 #endif
