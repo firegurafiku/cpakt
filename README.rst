@@ -1,4 +1,4 @@
-CPakt Unit Testing Framework
+Cpakt Unit Testing Framework
 ============================
 
 (Nothing here really yet.)
